@@ -1,0 +1,580 @@
+[
+  {
+    "id": "jamwon-001",
+    "name": "강변",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-002",
+    "name": "금호베스트빌",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-003",
+    "name": "노블레스",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-004",
+    "name": "대우아이빌",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-005",
+    "name": "대주피오레아파트",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-006",
+    "name": "데뜨아르",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-007",
+    "name": "동아",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-008",
+    "name": "두산위브",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-009",
+    "name": "래미안신반포리오센트",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-010",
+    "name": "래미안신반포팰리스",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-011",
+    "name": "롯데캐슬갤럭시",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-012",
+    "name": "롯데캐슬갤럭시(50-1)",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-013",
+    "name": "미주파스텔",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-014",
+    "name": "반포르엘",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-015",
+    "name": "반포센트럴자이",
+    "region": "잠원동",
+    "aliases": ["반센자"]
+  },
+  {
+    "id": "jamwon-016",
+    "name": "보미리아파트",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-017",
+    "name": "브라운스톤잠원",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-018",
+    "name": "블루힐하우스",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-019",
+    "name": "성진준빌라트",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-020",
+    "name": "신반포12",
+    "region": "잠원동",
+    "aliases": ["신반포12차","한신12차"]
+  },
+  {
+    "id": "jamwon-021",
+    "name": "신반포16",
+    "region": "잠원동",
+    "aliases": ["신반포16차","한신16차"]
+  },
+  {
+    "id": "jamwon-022",
+    "name": "신반포19",
+    "region": "잠원동",
+    "aliases": ["신반포19차","한신19차"]
+  },
+  {
+    "id": "jamwon-023",
+    "name": "신반포2",
+    "region": "잠원동",
+    "aliases": ["신반포2차","한신2차"]
+  },
+  {
+    "id": "jamwon-024",
+    "name": "신반포20",
+    "region": "잠원동",
+    "aliases": ["신반포20차","한신20차"]
+  },
+  {
+    "id": "jamwon-025",
+    "name": "신반포25",
+    "region": "잠원동",
+    "aliases": ["신반포25차","한신25차"]
+  },
+  {
+    "id": "jamwon-026",
+    "name": "신반포27",
+    "region": "잠원동",
+    "aliases": ["신반포27차","한신27차"]
+  },
+  {
+    "id": "jamwon-027",
+    "name": "신반포4",
+    "region": "잠원동",
+    "aliases": ["신반포4차","한신4차"]
+  },
+  {
+    "id": "jamwon-028",
+    "name": "신반포7",
+    "region": "잠원동",
+    "aliases": ["신반포7차","한신7차"]
+  },
+  {
+    "id": "jamwon-029",
+    "name": "신반포르엘",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-030",
+    "name": "신반포자이",
+    "region": "잠원동",
+    "aliases": ["신반자"]
+  },
+  {
+    "id": "jamwon-031",
+    "name": "신반포중앙하이츠",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-032",
+    "name": "신반포청구",
+    "region": "잠원동",
+    "aliases": ["청구"]
+  },
+  {
+    "id": "jamwon-033",
+    "name": "신화",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-034",
+    "name": "아크로리버뷰신반포",
+    "region": "잠원동",
+    "aliases": ["아리뷰","아크로리버뷰"]
+  },
+  {
+    "id": "jamwon-035",
+    "name": "월드메르디앙",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-036",
+    "name": "잠원동트루빌",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-037",
+    "name": "잠원시티아파트",
+    "region": "잠원동",
+    "aliases": ["시티"]
+  },
+  {
+    "id": "jamwon-038",
+    "name": "잠원아이비",
+    "region": "잠원동",
+    "aliases": ["아이비"]
+  },
+  {
+    "id": "jamwon-039",
+    "name": "잠원현대훼밀리",
+    "region": "잠원동",
+    "aliases": ["현대훼밀리"]
+  },
+  {
+    "id": "jamwon-040",
+    "name": "중앙하이츠",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-041",
+    "name": "킴스빌리지",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-042",
+    "name": "한강",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-043",
+    "name": "한신",
+    "region": "잠원동",
+    "aliases": [
+      "한신아파트"
+    ]
+  },
+  {
+    "id": "jamwon-044",
+    "name": "한신그린",
+    "region": "잠원동",
+    "aliases": ["그린"]
+  },
+  {
+    "id": "jamwon-045",
+    "name": "한신로얄",
+    "region": "잠원동",
+    "aliases": ["로얄"]
+  },
+  {
+    "id": "jamwon-046",
+    "name": "한신진일빌라트",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-047",
+    "name": "한신타운",
+    "region": "잠원동",
+    "aliases": ["타운"]
+  },
+  {
+    "id": "jamwon-048",
+    "name": "한신타워",
+    "region": "잠원동",
+    "aliases": ["타워"]
+  },
+  {
+    "id": "jamwon-049",
+    "name": "현대",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-050",
+    "name": "훼미리",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "jamwon-051",
+    "name": "메이플자이",
+    "region": "잠원동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-001",
+    "name": "궁전",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-002",
+    "name": "그랑빌",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-003",
+    "name": "덕동반포빌라트",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-004",
+    "name": "디에이치반포라클라스",
+    "region": "반포동",
+    "aliases": ["라클라스"]
+  },
+  {
+    "id": "banpo-005",
+    "name": "라인",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-006",
+    "name": "래미안원베일리",
+    "region": "반포동",
+    "aliases": ["원베일리"]
+  },
+  {
+    "id": "banpo-007",
+    "name": "래미안원펜타스",
+    "region": "반포동",
+    "aliases": ["원펜타스"]
+  },
+  {
+    "id": "banpo-008",
+    "name": "래미안퍼스티지",
+    "region": "반포동",
+    "aliases": ["퍼스티지"]
+  },
+  {
+    "id": "banpo-009",
+    "name": "반포2차ApelBaum",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-010",
+    "name": "반포대우멤버스카운티",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-011",
+    "name": "반포두산힐스빌",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-012",
+    "name": "반포래미안아이파크",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-013",
+    "name": "반포루이캐슬",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-014",
+    "name": "반포리체",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-015",
+    "name": "반포미도",
+    "region": "반포동",
+    "aliases": ["미도"]
+  },
+  {
+    "id": "banpo-016",
+    "name": "반포미도2차아파트",
+    "region": "반포동",
+    "aliases": ["미도2차"]
+  },
+  {
+    "id": "banpo-017",
+    "name": "반포샤인힐4차",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-018",
+    "name": "반포센트레빌아스테리움",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-019",
+    "name": "반포써밋",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-020",
+    "name": "반포에스케이뷰",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-021",
+    "name": "반포자이",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-022",
+    "name": "반포푸르지오",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-023",
+    "name": "반포훼미리(101동)",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-024",
+    "name": "반포훼미리(102동)",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-025",
+    "name": "반포힐스테이트",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-026",
+    "name": "삼광",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-027",
+    "name": "삼성에이스빌",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-028",
+    "name": "삼호가든맨션(5차)",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-029",
+    "name": "상지리츠빌(73-10)",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-030",
+    "name": "상지리츠빌2차",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-031",
+    "name": "아델스빌1",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-032",
+    "name": "아크로리버파크",
+    "region": "반포동",
+    "aliases": ["아리팍"]
+  },
+  {
+    "id": "banpo-033",
+    "name": "엘리제빌",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-034",
+    "name": "엠브이아파트",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-035",
+    "name": "태평아트",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-036",
+    "name": "팔라디오",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-037",
+    "name": "한신서래",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-038",
+    "name": "현대동궁아파트",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "banpo-039",
+    "name": "효성빌라26동",
+    "region": "반포동",
+    "aliases": []
+  },
+  {
+    "id": "general-01",
+    "name": "상가",
+    "region": "기타",
+    "aliases": [],
+    "tags": [
+      "상가"
+    ]
+  },
+  {
+    "id": "general-02",
+    "name": "건물",
+    "region": "기타",
+    "aliases": [],
+    "tags": [
+      "건물"
+    ]
+  },
+  {
+    "id": "general-03",
+    "name": "토지",
+    "region": "기타",
+    "aliases": [],
+    "tags": [
+      "토지"
+    ]
+  },
+  {
+    "id": "general-04",
+    "name": "기타",
+    "region": "기타",
+    "aliases": [],
+    "tags": [
+      "기타"
+    ]
+  }
+]

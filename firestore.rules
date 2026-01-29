@@ -1,0 +1,237 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function isSignedIn() { return request.auth != null; }
+    function adminEmails() {
+      return exists(/databases/$(db)/documents/config/adminAllowlist) &&
+        get(/databases/$(db)/documents/config/adminAllowlist).data.emails is list
+        ? get(/databases/$(db)/documents/config/adminAllowlist).data.emails
+        : [];
+    }
+    function isAllowlistedOwnerEmail() {
+      return isSignedIn() && adminEmails().hasAny([request.auth.token.email]);
+    }
+    function hasRole(role) {
+      return isSignedIn() &&
+        exists(/databases/$(db)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(db)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+    function isOwner() {
+      return isSignedIn() && (
+        hasRole('owner') ||
+        isAllowlistedOwnerEmail()
+      );
+    }
+    function isAdminOnly() {
+      return isSignedIn() && hasRole('admin');
+    }
+    function isAdmin() {
+      return isOwner() || isAdminOnly();
+    }
+    function isStaff() { return hasRole('staff'); }
+    function isViewer() { return hasRole('viewer'); }
+    function isAdminOrStaff() { return isAdmin() || isStaff(); }
+    function isSelf(uid) { return isSignedIn() && uid == request.auth.uid; }
+    function isAuthed() { return isSignedIn() && (isAdmin() || isStaff() || isViewer()); }
+    function isAnonPostOwner() {
+      return isSignedIn() && resource.data.uid == request.auth.uid;
+    }
+    function isAnonPostOwnerUpdate() {
+      return isAnonPostOwner() &&
+        request.resource.data.diff(resource.data).changedKeys().hasOnly(["title", "content", "updatedAt"]) &&
+        request.resource.data.title is string &&
+        request.resource.data.content is string;
+    }
+    function isAnonPostViewIncrement() {
+      return isSignedIn() &&
+        request.resource.data.diff(resource.data).changedKeys().hasOnly(["viewCount"]) &&
+        request.resource.data.viewCount is int &&
+        (
+          (!resource.data.keys().hasAny(["viewCount"]) && request.resource.data.viewCount == 1) ||
+          (resource.data.keys().hasAny(["viewCount"]) && request.resource.data.viewCount == resource.data.viewCount + 1)
+        );
+    }
+
+    // Users collection: profile + role
+    match /users/{uid} {
+      allow read: if isSelf(uid) || isAdmin();
+      allow create: if (
+        (isSelf(uid) && (
+          (request.resource.data.role != 'admin' && request.resource.data.role != 'owner') ||
+          isAllowlistedOwnerEmail()
+        )) ||
+        isOwner() ||
+        (isAdminOnly() && request.resource.data.role != 'owner')
+      );
+      allow update: if isOwner() || (isAdminOnly() && request.resource.data.role != 'owner') || (isSelf(uid) && isAllowlistedOwnerEmail());
+      allow delete: if isAdmin();
+    }
+
+    // Buyers collection: readable by signed-in users, writeable by admin or staff
+    match /buyers/{buyerId} {
+      allow read: if isAuthed();
+      allow create: if isAdminOrStaff();
+      allow update, delete: if isAdminOrStaff();
+    }
+
+    // Listings collection: readable by signed-in users, writeable by admin or staff
+    match /listings/{listingId} {
+      allow read: if isAuthed();
+      allow create: if isAdminOrStaff();
+      allow update, delete: if isAdminOrStaff();
+    }
+
+    // Curated listing sets (admin-managed)
+    match /curated_sets/{setId} {
+      allow read: if isAuthed();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Viewer leads: 의뢰/알림 요청 (관리자만 조회/삭제)
+        // Viewer leads: 국내/외 알림 등록 (관리자만 조회/삭제)
+    match /viewer_leads/{docId} {
+      allow read: if isAdmin();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    // Viewer listing views: 최근 열람 매물 기록
+    match /listingViews/{uid}/logs/{logId} {
+      allow read: if isAdmin() || isStaff() || request.auth.uid == uid;
+      allow create: if isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Viewer event logs: 검색/상세보기 등 행동 기록
+    match /viewer_events/{docId} {
+      allow read: if isAdminOrStaff();
+      allow create: if isSignedIn();
+      allow delete: if isAdminOrStaff();
+    }
+
+    // Viewer sessions: 방문 세션 기록
+    match /viewerSessions/{uid}/logs/{logId} {
+      allow read: if isAdminOrStaff() || request.auth.uid == uid;
+      allow create, update: if isSignedIn() && request.auth.uid == uid;
+      allow delete: if isAdminOrStaff();
+    }
+
+    // Viewer user stats: aggregated session metrics
+    match /viewerUserStats/{uid} {
+      allow read: if isAdminOrStaff() || request.auth.uid == uid;
+      allow create, update, delete: if false;
+    }
+
+    // Viewer totals: aggregated counts
+    match /viewerStatsTotals/{docId} {
+      allow read: if isAdminOrStaff();
+      allow create, update, delete: if false;
+    }
+
+    // Viewer search logs: 검색 기록 저장
+    match /viewer_search_logs/{docId} {
+      allow read: if isAuthed();
+      allow create, update: if isSignedIn();
+      allow delete: if isAdminOrStaff();
+    }
+
+    // Viewer scenarios: 주거 시나리오 응답
+    match /viewerScenarios/{docId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn();
+      allow delete: if isAdminOrStaff() || (isSignedIn() && request.auth.uid == resource.data.userId);
+    }
+
+    // Viewer scenario answers: 각 사용자 시나리오 선택 결과
+    match /viewerScenarioAnswers/{docId} {
+      allow read: if isSignedIn() && (isAdmin() || isStaff() || (request.auth.uid == resource.data.uid));
+      allow create: if isSignedIn();
+      allow update, delete: if isAdminOrStaff() || (isSignedIn() && request.auth.uid == resource.data.uid);
+    }
+
+    // User activity: 로그인/검색/시나리오 요약
+    match /userActivity/{docId} {
+      allow read: if isSignedIn() && (isAdmin() || isStaff() || request.auth.uid == docId);
+      allow create, update: if isSignedIn() && request.auth.uid == docId;
+      allow delete: if isAdminOrStaff();
+    }
+
+    // Login events: 카카오/비밀번호 로그인 카운트
+    match /loginEvents/{docId} {
+      allow read: if isAdminOrStaff();
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow delete: if isAdminOrStaff();
+    }
+
+    // Viewer complex meta: 단지 기본 정보
+    match /viewerComplexMeta/{docId} {
+      allow read: if isAuthed();
+      allow create, update, delete: if isAdminOrStaff();
+    }
+
+    // Viewer realtor meta: 중개 기본 정보
+        // Viewer realtor meta: 영업팀 메타 관리
+    match /viewerRealtor/{docId} {
+      allow read: if isAuthed();
+      allow create, update, delete: if isAdminOrStaff();
+    }
+
+    // Viewer content: 관리자 블로그 링크 등 문서
+    match /viewerContent/{docId} {
+      allow read: if isAuthed();
+      allow create, update, delete: if isAdminOrStaff();
+    }
+
+    // Viewer documents: managed by admins for customer-facing portals
+    match /views/{viewId} {
+      allow read: if isAuthed();
+      allow create, update, delete: if isAdmin();
+    }
+
+// Anonymous buyer board posts
+    match /anonPosts/{postId} {
+      allow read: if true;
+      // 익명 작성 허용 (로그인 필요 없음)
+      allow create: if true;
+      // 작성자(로그인) 또는 관리자 수정, 조회수 증가 허용
+      allow update: if isAdmin() || isAnonPostOwnerUpdate() || isAnonPostViewIncrement();
+      allow delete: if isAdmin() || isAnonPostOwner();
+    }
+
+    // Anonymous buyer board comments
+    match /anonComments/{commentId} {
+      allow read: if true;
+      // 댓글은 로그인 사용자만 작성 가능
+      allow create: if isSignedIn() && (
+        isAdmin() ||
+        !request.resource.data.keys().hasAny(["listingId"]) ||
+        request.resource.data.listingId == null ||
+        request.resource.data.listingId == ""
+      );
+      // 삭제/수정은 관리자만
+      allow update, delete: if isAdmin();
+    }
+
+    // User nicknames: uid를 기록해 중복 방지
+    match /userNicknames/{name} {
+      allow read: if true;
+      allow create, update: if isSignedIn() && request.auth.uid == request.resource.data.uid;
+      allow delete: if isAdminOrStaff() || (isSignedIn() && request.auth.uid == resource.data.uid);
+    }
+
+    // Comments collection: history notes for listings/buyers
+    match /comments/{commentId} {
+      allow read: if isAuthed();
+      allow create: if isSignedIn() && request.resource.data.createdByUid == request.auth.uid;
+      allow update, delete: if isSignedIn() && (
+        (exists(/databases/$(db)/documents/comments/$(commentId)) &&
+         get(/databases/$(db)/documents/comments/$(commentId)).data.createdByUid == request.auth.uid)
+        || isAdmin() || isStaff()
+      );
+    }
+
+    // Default: signed-in users can read other app docs (tighten as needed)
+    match /{document=**} {
+      allow read: if isAuthed();
+    }
+  }
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Taesung Real Estate">
+  <rect width="128" height="128" rx="28" fill="#111827"/>
+  <path d="M24 58L64 28l40 30v42a8 8 0 0 1-8 8H32a8 8 0 0 1-8-8V58z" fill="#ffb13b"/>
+  <path d="M46 104V72h36v32H46z" fill="#111827"/>
+  <rect x="54" y="80" width="20" height="18" rx="2" fill="#ffb13b"/>
+  <text x="64" y="54" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#111827" font-weight="700">TS</text>
+</svg>

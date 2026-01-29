@@ -1,0 +1,240 @@
+import React from "react";
+import Navbar from "../components/AppNavbar";
+import ListingDetailSheet from "../components/ListingDetailSheet";
+import ErrorBoundary from "../components/ErrorBoundary";
+import ListingCard from "../components/ListingCard";
+import ListingTableView from "../components/ListingTableView";
+import ListingSearchBar, { makeDefaultFilters, type ListingFilters } from "../components/ListingSearchBar";
+import { useSelection } from "../context/SelectionContext";
+import { useActiveListings, useListingsMeta } from "../state/useListings";
+import { useMatches } from "../state/useMatches";
+import { useAuth } from "../context/AuthContext";
+import { softDeleteListings, hardDeleteListings } from "../lib/delete";
+import { filterAndSort } from "../lib/listingFilter";
+import { listUserProfiles, type UserProfile } from "../lib/users";
+
+const CHUNK_SIZE = 50;
+
+export default function ListingsPage() {
+  const rows = useActiveListings();
+  const { hasMore, loadMore, loading } = useListingsMeta();
+  const matches = useMatches();
+  const { selected, toggle: toggleSelect, isSelected, setMany } = useSelection("listings");
+  const [filters, setFilters] = React.useState<ListingFilters>(() => makeDefaultFilters());
+  const [users, setUsers] = React.useState<UserProfile[]>([]);
+  const [detailId, setDetailId] = React.useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = React.useState(CHUNK_SIZE);
+  const [viewMode, setViewMode] = React.useState<"cards" | "table">(() => {
+    try {
+      const v = localStorage.getItem("rj_listings_view");
+      return v === "table" || v === "cards" ? (v as "cards" | "table") : "cards";
+    } catch {
+      return "cards";
+    }
+  });
+  const [wideTableOpen, setWideTableOpen] = React.useState(false);
+  const sentinelRef = React.useRef<HTMLDivElement | null>(null);
+
+  const items = React.useMemo(() => filterAndSort(rows as any[], filters, "listings"), [rows, filters]);
+  const pagedItems = React.useMemo(() => items.slice(0, visibleCount), [items, visibleCount]);
+  const pageUniverse = React.useMemo(() => filterAndSort(rows as any[], makeDefaultFilters(), "listings"), [rows]);
+  const pageIdSet = React.useMemo(() => new Set((pageUniverse as any[]).map((r: any) => r.id)), [pageUniverse]);
+  const selectedIds = React.useMemo(() => selected.filter((id) => pageIdSet.has(id)), [selected, pageIdSet]);
+  const selectedSet = React.useMemo(() => new Set(selectedIds), [selectedIds]);
+  const selectedCount = selectedIds.length;
+  const visibleIds = React.useMemo(() => (pagedItems as any[]).map((r: any) => r?.id).filter(Boolean) as string[], [pagedItems]);
+  const visibleIdSet = React.useMemo(() => new Set(visibleIds), [visibleIds]);
+  const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedSet.has(id));
+
+  const areaOptions = React.useMemo(() => {
+    const s = new Set<number>();
+    (rows as any[]).forEach((r: any) => {
+      if (typeof r.area_py === "number") s.add(r.area_py);
+    });
+    return Array.from(s).sort((a, b) => a - b);
+  }, [rows]);
+
+  const hasLocalMore = visibleCount < items.length;
+
+  React.useEffect(() => setVisibleCount(CHUNK_SIZE), [filters]);
+
+  React.useEffect(() => {
+    listUserProfiles()
+      .then((all) => setUsers(all.filter((u) => u.role === "admin" || u.role === "staff")))
+      .catch(() => {});
+  }, []);
+
+  React.useEffect(() => {
+    try {
+      localStorage.setItem("rj_listings_view", viewMode);
+    } catch {
+      /* ignore */
+    }
+  }, [viewMode]);
+
+  const handleShowMore = React.useCallback(() => {
+    setVisibleCount((prev) => {
+      const next = prev + CHUNK_SIZE;
+      if (next >= items.length && hasMore && !loading) loadMore();
+      return next;
+    });
+  }, [hasMore, items.length, loadMore, loading]);
+
+  React.useEffect(() => {
+    if (!sentinelRef.current) return;
+    const node = sentinelRef.current;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          if (!hasLocalMore && !hasMore) return;
+          if (!hasLocalMore && loading) return;
+          handleShowMore();
+        });
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [handleShowMore, hasLocalMore, hasMore, loading]);
+
+  React.useEffect(() => {
+    if (!hasMore || loading) return;
+    loadMore();
+  }, [hasMore, loading, loadMore]);
+
+  const { user } = useAuth();
+  const isAdmin = (user as any)?.role === "admin" || String((user as any)?.email || "").toLowerCase() === "i000sang@gmail.com";
+
+  async function handleSoftDeleteSelected() {
+    if (selectedCount === 0) return;
+    const ok = window.confirm(`?†ÌÉù ${selectedCount}Í±¥ÏùÑ Î≥¥Í? Ï≤òÎ¶¨?†Íπå??\n(Î≥¥Í? ?ÑÏóê??Î≥µÍµ¨ Í∞Ä?•Ìï©?àÎã§)`);
+    if (!ok) return;
+    const remaining = selected.filter((id) => !selectedSet.has(id));
+    await softDeleteListings(selectedIds);
+    setMany(remaining);
+  }
+
+  async function handleHardDeleteSelected() {
+    if (selectedCount === 0 || !isAdmin) return;
+    const phrase = prompt("?†ÌÉù Îß§Î¨º???ÑÏ†Ñ ??†ú?©Îãà??\n'?ÑÏ†Ñ??†ú'Î•??ÖÎ†•?òÎ©¥ ÏßÑÌñâ?©Îãà??");
+    if (phrase !== "?ÑÏ†Ñ??†ú") return;
+    const remaining = selected.filter((id) => !selectedSet.has(id));
+    await hardDeleteListings(selectedIds);
+    setMany(remaining);
+  }
+
+  async function handleSoftDeleteSingle(id: string) {
+    const ok = window.confirm("??Îß§Î¨º??Î≥¥Í? Ï≤òÎ¶¨?†Íπå??\n(?òÏ§ë??Î≥µÍµ¨ Í∞Ä?•Ìï©?àÎã§)");
+    if (!ok) return;
+    await softDeleteListings([id]);
+    setMany(selected.filter((sid) => sid !== id));
+  }
+
+  function handleToggleSelectAllVisible() {
+    if (!visibleIds.length) return;
+    if (allVisibleSelected) {
+      const next = selected.filter((id) => !visibleIdSet.has(id));
+      setMany(next);
+    } else {
+      const next = Array.from(new Set([...selected, ...visibleIds]));
+      setMany(next);
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-neutral-50">
+      <Navbar />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <header className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-3">
+            <h1 className="text-2xl font-bold">Îß§Î¨º Î™©Î°ù</h1>
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-neutral-500 mt-1 sm:mt-0">
+              <span>?†ÌÉù {selectedCount}Í±?/span>
+              <span className="hidden sm:inline">¬∑</span>
+              <span>?ÑÏ≤¥ {items.length.toLocaleString()}Í±?/span>
+              <button
+                type="button"
+                onClick={handleToggleSelectAllVisible}
+                disabled={!visibleIds.length}
+                className="ml-1 px-2 py-1 rounded border border-neutral-300 text-[11px] sm:text-xs text-neutral-600 disabled:opacity-40"
+              >
+                {allVisibleSelected ? "?†ÌÉù ?¥Ï†ú" : "?ÑÏ≤¥ ?†ÌÉù"}
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-wrap sm:flex-nowrap items-center justify-end gap-2">
+            <div className="inline-flex rounded-lg bg-white ring-1 ring-neutral-300 overflow-hidden shrink-0">
+              <button
+                type="button"
+                onClick={handleSoftDeleteSelected}
+                disabled={selectedCount === 0}
+                className="h-7 sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm text-red-700 disabled:opacity-40"
+                title="?†ÌÉù Î≥¥Í?"
+              >
+                Î≥¥Í?
+              </button>
+              {isAdmin ? (
+                <button
+                  type="button"
+                  onClick={handleHardDeleteSelected}
+                  disabled={selectedCount === 0}
+                  className="h-7 sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm text-white bg-red-700 disabled:opacity-40"
+                  title="?†ÌÉù ?ÑÏ†Ñ??†ú"
+                >
+                  ?ÑÏ†Ñ??†ú
+                </button>
+              ) : null}
+            </div>
+            <div className="inline-flex rounded-lg bg-white ring-1 ring-neutral-300 overflow-hidden shrink-0">
+              <button
+                type="button"
+                className={`h-7 sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm ${viewMode === "cards" ? "bg-neutral-900 text-white" : "text-neutral-800"}`}
+                onClick={() => setViewMode("cards")}
+                title="Ïπ¥Îìú"
+              >
+                Ïπ¥Îìú
+              </button>
+              <button
+                type="button"
+                className={`h-7 sm:h-9 px-2 sm:px-3 text-[11px] sm:text-sm ${viewMode === "table" ? "bg-neutral-900 text-white" : "text-neutral-800"}`}
+                onClick={() => setViewMode("table")}
+                title="?ëÏ?"
+              >
+                ?ëÏ?
+              </button>
+            </div>
+            <button
+              className="h-7 sm:h-9 px-2 sm:px-3 rounded-lg bg-neutral-900 text-white text-[11px] sm:text-sm shrink-0"
+              onClick={() => setDetailId("new")}
+            >
+              ?†Í∑ú Îß§Î¨º
+            </button>
+          </div>
+        </header>
+
+        <ListingSearchBar
+          value={filters}
+          onChange={setFilters}
+          placeholder="Í≤Ä?âÏñ¥, ?®Ï?Î™?Ï£ºÏÜå/Î©¥Ï†Å/Í∞ÄÍ≤?Î©îÎ™®"
+          showArea
+          areaOptions={areaOptions}
+          showAssignee
+          showSort
+          users={users}
+        />
+
+        {viewMode === "cards" ? (
+          <div id="export-board" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            {pagedItems.map((r: any) => (
+              <ListingCard
+                key={r.id}
+                row={r}
+                mode="listings"
+                selected={isSelected(r.id)}
+                onToggleSelect={toggleSelect}
+                onDetail={setDetailId}
+                matchCount={matches.getCountForListing(r.id)}
+                onDelete={handleSoftDeleteSingle}
+              />
+            ))}

@@ -1,0 +1,149 @@
+﻿@import "tailwindcss";
+@import url("/fonts/SUIT.css");
+
+html, body, #root { height: 100%; background:#fafafa; }
+
+/* 기본 폰트 */
+body {
+  font-family: "SUIT", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+/* 핀치 줌/스크롤 허용 (모바일) */
+html, body {
+  touch-action: auto;
+}
+.table-wrapper {
+  touch-action: auto;          /* 기본 제스처 모두 허용 */
+  -ms-touch-action: auto;
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 버튼/칩 공통 스타일 */
+.btn {
+  @apply inline-flex items-center justify-center gap-1 text-sm h-9 px-3 rounded-lg;
+}
+.btn-outline {
+  @apply border border-neutral-200 bg-white hover:bg-neutral-50;
+}
+.btn-solid {
+  @apply bg-neutral-900 text-white hover:bg-neutral-800;
+}
+.chip {
+  @apply text-xs bg-neutral-100 text-neutral-700 px-2 py-1 rounded-full border border-neutral-200;
+}
+
+/* 카드 공통 질감 */
+.card {
+  @apply bg-white rounded-2xl shadow-sm ring-1 ring-neutral-200 hover:shadow-md transition-shadow;
+}
+
+@layer components {
+  .table-wrapper table {
+    table-layout: fixed;
+    width: 100%;
+  }
+  .table-wrapper table.listing-table {
+    min-width: 960px;
+  }
+  .table-wrapper table.listing-table th,
+  .table-wrapper table.listing-table td {
+    table-layout: fixed;
+    white-space: nowrap;
+  }
+  .table-wrapper table.listing-table th:nth-child(1),
+  .table-wrapper table.listing-table td:nth-child(1) { width: 5px !important; }
+  .table-wrapper table.listing-table th:nth-child(2),
+  .table-wrapper table.listing-table td:nth-child(2) { width: 40px !important; }
+  .table-wrapper table.listing-table th:nth-child(3),
+  .table-wrapper table.listing-table td:nth-child(3) { width: 75px !important; }
+  .table-wrapper table.listing-table th:nth-child(4),
+  .table-wrapper table.listing-table td:nth-child(4) { width: 60px !important; }
+  .table-wrapper table.listing-table th:nth-child(5),
+  .table-wrapper table.listing-table td:nth-child(5) { width: 50px !important; }
+  .table-wrapper table.listing-table th:nth-child(6),
+  .table-wrapper table.listing-table td:nth-child(6) { width: 40px !important; }
+  .table-wrapper table.listing-table th:nth-child(7),
+  .table-wrapper table.listing-table td:nth-child(7) { width: 50px !important; }
+  .table-wrapper table.listing-table th:nth-child(8),
+  .table-wrapper table.listing-table td:nth-child(8) { width: 40px !important; }
+  .table-wrapper table.listing-table th:nth-child(9),
+  .table-wrapper table.listing-table td:nth-child(9) { width: 100px !important; }
+  .table-wrapper table.listing-table th:nth-child(10),
+  .table-wrapper table.listing-table td:nth-child(10) { width: 300px !important; }
+}
+
+/* Print refinements */
+@media print {
+  .print-avoid-break { break-inside: avoid; page-break-inside: avoid; }
+  .print-page { width: 794px; margin: 0 auto; box-shadow: none !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+.print-panel {
+  display: none;
+}
+
+@media print {
+  body:not(.print-mode) {
+    display: none;
+  }
+  body.print-mode {
+    background: #fff;
+  }
+  body.print-mode #root > :not(.print-panel) {
+    display: none;
+  }
+  body.print-mode .print-panel {
+    display: block;
+    padding: 24px;
+  }
+  body.print-mode .print-panel table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    table-layout: fixed;
+    background: #f3f4f6;
+  }
+  body.print-mode .print-panel th,
+  body.print-mode .print-panel td {
+    border: 1px solid #d1d5db;
+    padding: 6px 8px;
+    text-align: left;
+    vertical-align: top;
+    white-space: normal;
+    word-break: break-word;
+  }
+  body.print-mode .print-panel th:nth-child(1),
+  body.print-mode .print-panel td:nth-child(1) { width: 35px; }
+  body.print-mode .print-panel th:nth-child(2),
+  body.print-mode .print-panel td:nth-child(2) { width: 70px; }
+  body.print-mode .print-panel th:nth-child(3),
+  body.print-mode .print-panel td:nth-child(3) { width: 55px; }
+  body.print-mode .print-panel th:nth-child(4),
+  body.print-mode .print-panel td:nth-child(4) { width: 40px; }
+  body.print-mode .print-panel th:nth-child(5),
+  body.print-mode .print-panel td:nth-child(5) { width: 40px; }
+  body.print-mode .print-panel th:nth-child(6),
+  body.print-mode .print-panel td:nth-child(6) { width: 70px; }
+  body.print-mode .print-panel th:nth-child(7),
+  body.print-mode .print-panel td:nth-child(7) { width: 40px; }
+  body.print-mode .print-panel th:nth-child(8),
+  body.print-mode .print-panel td:nth-child(8) { width: 100px; }
+  body.print-mode .print-panel th:nth-child(9),
+  body.print-mode .print-panel td:nth-child(9) { width: 250px; }
+  body.print-mode .print-panel tr.print-row.print-urgent {
+    border-bottom: 2px solid #d02626;
+  }
+  body.print-mode .print-panel tr.print-row.print-our {
+    background-color: #ecfdf3;
+  }
+}
+
+/* Mobile form zoom prevention (ensure 16px on inputs) */
+@layer base {
+  @media (max-width: 640px) {
+    input, select, textarea { font-size: 16px; }
+  }
+}

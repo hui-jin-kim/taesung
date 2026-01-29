@@ -1,0 +1,12 @@
+[
+  {
+    "origin": [
+      "https://rj-realestate-1dae8.firebaseapp.com",
+      "https://rj-realestate-1dae8.web.app",
+      "http://localhost:5173"
+    ],
+    "method": ["GET", "HEAD", "OPTIONS"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
+  }
+]
