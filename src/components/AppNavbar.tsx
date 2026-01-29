@@ -101,7 +101,7 @@ function LoggedInNavbar({ locPathname }: { locPathname: string }) {
                   <Tab key={tab.to} {...tab} activePathname={locPathname} />
                 ))}
                 {role === "owner" || role === "admin" ? (
-                  <Tab to="/admin" label="관리자" activePathname={locPathname} />
+                  <Tab to="/admin/tools" label="관리자" activePathname={locPathname} />
                 ) : null}
               </nav>
             </div>

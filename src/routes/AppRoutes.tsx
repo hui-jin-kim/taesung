@@ -10,11 +10,6 @@ import Buyers from "../pages/Buyers";
 import BuyerDetail from "../pages/BuyerDetail";
 import Selected from "../pages/Selected";
 import Admin from "../pages/Admin";
-import AdminDashboard from "../pages/AdminDashboard";
-import AdminAlerts from "../pages/AdminAlerts";
-import AdminAgency from "../pages/AdminAgency";
-import AdminCurations from "../pages/AdminCurations";
-import AdminSettings from "../pages/AdminSettings";
 import ListingDetail from "../pages/ListingDetail";
 import Login from "../pages/Login";
 import ExpiryCenter from "../pages/ExpiryCenter";
@@ -63,23 +58,6 @@ function HomeRedirect() {
   if (!initialized) return null;
   if (!user) return <Navigate to="/login" replace />;
   return <Navigate to={STAFF_HOME} replace />;
-}
-
-function Forbidden() {
-  const { user } = useAuth();
-  return (
-    <div className="min-h-screen bg-neutral-50">
-      <Navbar />
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
-        <h1 className="text-2xl font-bold mb-2">접근 권한이 없습니다</h1>
-        <p className="text-neutral-600 text-sm">관리자 전용 페이지입니다.</p>
-        <div className="mt-4 text-sm text-neutral-500">
-          현재 사용자 <span className="font-mono">{user?.email ?? "-"}</span>
-          {(user as any)?.role ? <span className="ml-2">(role: {(user as any).role})</span> : null}
-        </div>
-      </div>
-    </div>
-  );
 }
 
 function ForbiddenClean() {
@@ -202,50 +180,10 @@ export default function AppRoutes() {
         }
       />
       <Route
-        path="/admin/alerts"
-        element={
-          <AdminOnly>
-            <AdminAlerts />
-          </AdminOnly>
-        }
-      />
-      <Route
-        path="/admin/curations"
-        element={
-          <AdminOnly>
-            <AdminCurations />
-          </AdminOnly>
-        }
-      />
-      <Route
-        path="/admin/agency"
-        element={
-          <AdminOnly>
-            <AdminAgency />
-          </AdminOnly>
-        }
-      />
-      <Route
-        path="/admin/settings"
-        element={
-          <AdminOnly>
-            <AdminSettings />
-          </AdminOnly>
-        }
-      />
-      <Route
         path="/admin/tools"
         element={
           <AdminOnly>
             <Admin />
-          </AdminOnly>
-        }
-      />
-      <Route
-        path="/admin"
-        element={
-          <AdminOnly>
-            <AdminDashboard />
           </AdminOnly>
         }
       />
