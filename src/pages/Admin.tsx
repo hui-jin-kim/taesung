@@ -8,6 +8,7 @@ import {
   deleteUserProfile,
   listUserProfiles,
   sendReset,
+  updateUserName,
   updateUserRole,
   type UserProfile,
 } from "../lib/users";
@@ -61,6 +62,7 @@ function UsersTab() {
   const [error, setError] = useState("");
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [pending, setPending] = useState<Record<string, UserProfile["role"]>>({});
+  const [pendingNames, setPendingNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const canManageOwners = me?.role === "owner";
   const createRoleOptions: Array<UserProfile["role"]> = canManageOwners
@@ -119,6 +121,30 @@ function UsersTab() {
     } catch (err: any) {
       console.error(err);
       alert(err?.message || "권한 변경에 실패했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function applyName(uid: string, nextName: string) {
+    const trimmed = nextName.trim();
+    if (!trimmed) {
+      alert("이름을 입력해 주세요.");
+      return;
+    }
+    setLoading(true);
+    try {
+      await updateUserName(uid, trimmed);
+      setPendingNames((prev) => {
+        const copy = { ...prev };
+        delete copy[uid];
+        return copy;
+      });
+      await refresh();
+      alert("이름이 변경되었습니다.");
+    } catch (err: any) {
+      console.error(err);
+      alert(err?.message || "이름 변경에 실패했습니다.");
     } finally {
       setLoading(false);
     }
@@ -197,7 +223,20 @@ function UsersTab() {
             {users.map((u) => (
               <tr key={u.uid} className="border-t">
                 <td className="p-2">{u.email}</td>
-                <td className="p-2">{u.name}</td>
+                <td className="p-2">
+                  <input
+                    className="rounded border px-2 py-1 text-sm w-full"
+                    value={pendingNames[u.uid] ?? u.name ?? ""}
+                    placeholder="이름"
+                    onChange={(e) =>
+                      setPendingNames((prev) => ({
+                        ...prev,
+                        [u.uid]: e.target.value,
+                      }))
+                    }
+                    disabled={loading}
+                  />
+                </td>
                 <td className="p-2">
                   <select
                     value={pending[u.uid] ?? u.role}
@@ -224,6 +263,14 @@ function UsersTab() {
                   </select>
                 </td>
                 <td className="p-2 text-right space-x-2">
+                  <button
+                    type="button"
+                    className="text-emerald-600 hover:underline disabled:opacity-50"
+                    onClick={() => applyName(u.uid, pendingNames[u.uid] ?? u.name ?? "")}
+                    disabled={loading || (pendingNames[u.uid] ?? u.name ?? "") === (u.name ?? "")}
+                  >
+                    이름 저장
+                  </button>
                   <button
                     type="button"
                     className="text-blue-600 hover:underline disabled:opacity-50"

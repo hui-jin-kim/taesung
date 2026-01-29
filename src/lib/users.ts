@@ -37,6 +37,10 @@ export async function updateUserRole(uid: string, role: UserProfile['role']) {
   await updateDoc(doc(db, 'users', uid), { role });
 }
 
+export async function updateUserName(uid: string, name: string) {
+  await updateDoc(doc(db, 'users', uid), { name });
+}
+
 export async function deleteUserProfile(uid: string) {
   await deleteDoc(doc(db, 'users', uid));
 }
