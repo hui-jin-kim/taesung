@@ -187,6 +187,14 @@ export default function AppRoutes() {
           </AdminOnly>
         }
       />
+      <Route
+        path="/admin"
+        element={
+          <AdminOnly>
+            <Navigate to="/admin/tools" replace />
+          </AdminOnly>
+        }
+      />
       <Route path="*" element={<Navigate to={STAFF_HOME} replace />} />
     </Routes>
   );
